@@ -1,0 +1,88 @@
+/* Container */
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background-color: black;
+  color: white;
+  text-align: center;
+  position: relative;
+}
+
+/* Progress Bar */
+.progress-bar {
+  position: absolute;
+  top: 5%;
+  left: 10%;
+  width: 0%;
+  height: 5px;
+  background: linear-gradient(to right, green, blue, yellow, red);
+  transition: width 6s linear;
+}
+
+/* Title */
+.title {
+  font-size: 24px;
+  font-weight: bold;
+  margin-top: 40px;
+}
+
+/* Labels */
+.label {
+  color: #00ff00;
+  font-size: 18px;
+  margin-top: 20px;
+}
+
+/* Number Boxes */
+.box {
+  background-color: white;
+  color: black;
+  font-size: 28px;
+  font-weight: bold;
+  padding: 10px 30px;
+  border-radius: 8px;
+  margin-top: 10px;
+}
+
+/* Buttons */
+.btn {
+  margin-top: 20px;
+  padding: 10px 20px;
+  font-size: 18px;
+  background-color: green;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.btn:hover {
+  background-color: darkgreen;
+}
+/* Timer Box */
+.timer-box {
+  background-color: red;
+  color: white;
+  font-size: 24px;
+  font-weight: bold;
+  padding: 10px 30px;
+  border-radius: 8px;
+  margin-top: 10px;
+}
+@keyframes slideIn {
+  from {
+    transform: translateY(50px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.slide-in {
+  animation: slideIn 0.5s ease-out;
+}
