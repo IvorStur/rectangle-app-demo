@@ -1,14 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { useGame } from "../GameContext.js";
-import {
-  Container,
-  Row,
-  Col,
-  ProgressBar,
-  Button,
-  Card,
-} from "react-bootstrap";
-import "animate.css"; // Optional for animations
+import { useGame } from "../GameContext.js"; // Import Context
+import "./BoxComponent.css"; // Import styles
 
 function BoxComponent() {
   const { numbers, timeList } = useGame();
@@ -32,22 +24,30 @@ function BoxComponent() {
       return;
     }
 
-    setProgress(0);
+    setPreparing(true);
+    setProgress(0); // Start at 100%
+
+    let duration = 8000; // 8 seconds
+    let interval = 100; // Update every 100ms
+    let steps = duration / interval; // Number of steps
+    let decrement = 100 / steps; // How much to decrease each step
+
     let progressInterval = setInterval(() => {
       setProgress((prev) => {
         if (prev >= 100) {
           clearInterval(progressInterval);
           return 100;
         }
-        return prev + 1.25; // 8s / 100 steps = 1.25 per step
+        return prev + decrement;
       });
-    }, 80);
+    }, interval);
 
     setTimeout(() => {
+      clearInterval(progressInterval);
       setProgress(0);
       setPreparing(false);
       startNextGame(index);
-    }, 8000);
+    }, duration);
   };
 
   const startNextGame = (index) => {
@@ -63,6 +63,7 @@ function BoxComponent() {
     const currentTime = timeList[index];
 
     setSlideIn(false);
+
     setNextIndex(index + 1);
 
     const countdown = setInterval(() => {
@@ -76,53 +77,44 @@ function BoxComponent() {
     }, 1000);
 
     setTimeout(() => {
-      startNextGame(index + 1);
+      setPreparing(true);
+      startPreparingPhase(index + 1);
     }, currentTime * 1000);
+
+    // setTimeout(() => {
+    //   setNextIndex(index + 1);
+
+    //   const countdownInterval = setInterval(() => {
+    //     setRemainingTime((prev) => {
+    //       if (prev <= 1) {
+    //         clearInterval(countdownInterval);
+    //         startPreparingPhase(index + 1);
+    //         return 0;
+    //       }
+    //       return prev - 1;
+    //     });
+    //   }, 1000);
+    // }, 500);
   };
 
   return (
-    <Container className="d-flex flex-column align-items-center justify-content-center vh-100 bg-black text-white text-center position-relative">
-      <h1 className="fw-bold mt-4">{preparing ? "Preparing" : "Playing"}</h1>
-      <ProgressBar
-        now={progress}
-        className="w-80 mx-auto my-3"
-        style={{ width: "80%", margin: "10% auto" }}
-        variant="success"
-      />
+    <div className="container">
+      <h1 className="title">{preparing ? "Preparing" : "Playing"}</h1>
+      <div className="progress-bar" style={{ width: `${progress}%` }}></div>
 
-      <Row className="w-50 text-center">
-        <Col>
-          <p className="text-success fw-bold">Now</p>
-          <Card
-            className={`p-3 fw-bold ${
-              slideIn ? "animate__animated animate__fadeInUp" : ""
-            }`}
-          >
-            <Card.Body className="text-dark">{now || "Waiting..."}</Card.Body>
-          </Card>
-        </Col>
-      </Row>
+      <p className="label">Now</p>
+      <div className={`box ${slideIn ? "slide-in" : ""}`}>
+        {now || "Waiting..."}
+      </div>
 
-      <Row className="w-50 text-center mt-3">
-        <Col>
-          <p className="text-success fw-bold">Time Remaining</p>
-          <Card className="bg-danger text-white p-3 fw-bold">
-            <Card.Body>{remainingTime > 0 ? remainingTime : "..."}</Card.Body>
-          </Card>
-        </Col>
-      </Row>
+      <p className="label">Time Remaining</p>
+      <div className="timer-box">
+        {remainingTime > 0 ? remainingTime : "..."}
+      </div>
 
-      <Row className="w-50 text-center mt-3">
-        <Col>
-          <p className="text-success fw-bold">Next game</p>
-          <Card className="p-3 fw-bold">
-            <Card.Body className="text-dark">
-              {numbers[nextIndex] || "Finished"}
-            </Card.Body>
-          </Card>
-        </Col>
-      </Row>
-    </Container>
+      <p className="label">Next game</p>
+      <div className="box">{numbers[nextIndex] || "Finished"}</div>
+    </div>
   );
 }
 
