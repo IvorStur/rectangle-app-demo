@@ -8,6 +8,7 @@ function BoxComponent() {
   const [nextIndex, setNextIndex] = useState(0);
   const [progress, setProgress] = useState(0);
   const [remainingTime, setRemainingTime] = useState(0);
+  const [preparing, setPreparing] = useState(true);
 
   const [slideIn, setSlideIn] = useState(false);
 
@@ -26,12 +27,17 @@ function BoxComponent() {
     setProgress(100);
     setTimeout(() => {
       setProgress(0);
+      setPreparing(false);
       startNextGame(index);
-    }, 6000);
+    }, 8000);
   };
 
   const startNextGame = (index) => {
-    if (index >= numbers.length) return;
+    if (index >= numbers.length) {
+      setNow("Finished");
+      setProgress(0);
+      return;
+    }
 
     setSlideIn(true);
     setNow(numbers[index]);
@@ -48,12 +54,12 @@ function BoxComponent() {
           clearInterval(countdown);
           return 0;
         }
-        return prev - 0.5;
+        return prev - 1;
       });
     }, 1000);
 
     setTimeout(() => {
-      startPreparingPhase(index + 1);
+      startNextGame(index + 1);
     }, currentTime * 1000);
 
     // setTimeout(() => {
@@ -74,7 +80,7 @@ function BoxComponent() {
 
   return (
     <div className="container">
-      <h1 className="title">Preparing</h1>
+      <h1 className="title">{preparing ? "Preparing" : "Playing"}</h1>
       <div className="progress-bar" style={{ width: `${progress}%` }}></div>
 
       <p className="label">Now</p>
